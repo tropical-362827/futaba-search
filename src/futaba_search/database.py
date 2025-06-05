@@ -19,8 +19,10 @@ from .logging_config import get_logger
 
 logger = get_logger(__name__)
 
+
 class Base(DeclarativeBase):
     """SQLAlchemyのベースクラス"""
+
     pass
 
 
@@ -222,4 +224,6 @@ class FutabaDatabase:
             )
             session.commit()
             if deleted_count > 0:
-                logger.info(f"{deleted_count}件の古い通知レコードをクリーンアップしました")
+                logger.info(
+                    f"{deleted_count}件の古い通知レコードをクリーンアップしました"
+                )

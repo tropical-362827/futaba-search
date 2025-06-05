@@ -40,8 +40,7 @@ class FutabaBot(commands.Bot):
 
         # 初期ステータスを設定
         activity = discord.Activity(
-            type=discord.ActivityType.watching,
-            name="ふたば☆ちゃんねるをチェック中..."
+            type=discord.ActivityType.watching, name="ふたば☆ちゃんねるをチェック中..."
         )
         await self.change_presence(status=discord.Status.online, activity=activity)
         logger.info("初期ステータスを設定")
@@ -77,14 +76,15 @@ class FutabaBot(commands.Bot):
                 if active_channels > 0:
                     activity = discord.Activity(
                         type=discord.ActivityType.watching,
-                        name=f"{active_channels}個のチャンネルで動作中!"
+                        name=f"{active_channels}個のチャンネルで動作中!",
                     )
                 else:
                     activity = discord.Activity(
-                        type=discord.ActivityType.watching,
-                        name="購読登録待ち中..."
+                        type=discord.ActivityType.watching, name="購読登録待ち中..."
                     )
-                await self.change_presence(status=discord.Status.online, activity=activity)
+                await self.change_presence(
+                    status=discord.Status.online, activity=activity
+                )
                 logger.debug(f"ステータス更新: {active_channels}個のチャンネルで動作中")
 
                 for channel_id, keyword in subscriptions:
