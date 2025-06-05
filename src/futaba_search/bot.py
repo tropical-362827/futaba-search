@@ -336,10 +336,58 @@ def create_bot() -> FutabaBot:
                     "このチャンネルはミュートされていません。", ephemeral=True
                 )
 
+        elif action == "help":
+            logger.debug("helpアクションを処理中")
+            help_text = """
+**🔍 ふたば検索ボット - ヘルプ**
+
+ふたば☆ちゃんねるで指定したキーワードを含むスレッドが立った時に通知するボットです。
+
+**📝 利用可能なコマンド:**
+
+• `/futaba-search subscribe <キーワード>`
+  - 指定したキーワードの通知を登録
+  - 例: `/futaba-search subscribe 猫`
+
+• `/futaba-search unsubscribe <キーワード>`
+  - 指定したキーワードの通知を解除
+  - 例: `/futaba-search unsubscribe 猫`
+
+• `/futaba-search list`
+  - このチャンネルに登録されているキーワード一覧を表示
+  - ミュート状態も表示されます
+
+• `/futaba-search mute <期間>`
+  - 指定した期間、このチャンネルの通知を停止
+  - 期間形式: `30m`（30分）、`1h`（1時間）、`2d`（2日）
+  - 例: `/futaba-search mute 1h`
+
+• `/futaba-search unmute`
+  - このチャンネルのミュートを解除
+
+• `/futaba-search help`
+  - このヘルプを表示
+
+**⚡ 監視機能:**
+- 5分間隔でふたば☆ちゃんねるをチェック
+- 登録したキーワードが含まれるスレッドを自動検出
+- 同じスレッドへの重複通知を防止
+- 古い通知履歴は1週間で自動削除
+
+**🔗 通知に含まれる情報:**
+- スレッドのタイトルと画像
+- ふたば☆ちゃんねる本家へのリンク
+- ふたばフォレストへのリンク
+- FTBucketへのリンク
+
+何かご質問がございましたら、お気軽にお声かけください！
+"""
+            await interaction.followup.send(help_text)
+
         else:
             logger.debug(f"不明なアクションでエラー返却: action={action}")
             await interaction.followup.send(
-                "有効なアクション: subscribe, unsubscribe, list, mute, unmute",
+                "有効なアクション: subscribe, unsubscribe, list, mute, unmute, help",
                 ephemeral=True,
             )
 
@@ -348,7 +396,7 @@ def create_bot() -> FutabaBot:
         _interaction: discord.Interaction, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         """アクションパラメータの自動補完を提供"""
-        actions = ["subscribe", "unsubscribe", "list", "mute", "unmute"]
+        actions = ["subscribe", "unsubscribe", "list", "mute", "unmute", "help"]
         return [
             discord.app_commands.Choice(name=action, value=action)
             for action in actions
