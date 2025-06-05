@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  futaba-search:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: futaba-search-bot
+    restart: unless-stopped
+    environment:
+      # Discord botのトークン（.envファイルまたは環境変数から設定）
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      # データベースファイルのパス（コンテナ内）
+      - DATABASE_PATH=/app/data/futaba_bot.db
+      # ふたばAPIのURL（デフォルト値をオーバーライドする場合）
+      - FUTABA_API_URL=${FUTABA_API_URL:-https://may.2chan.net/b/futaba.php?mode=json}
+      # 監視間隔（秒）
+      - MONITOR_INTERVAL=${MONITOR_INTERVAL:-60}
+    volumes:
+      # SQLiteデータベースファイルを永続化
+      - ./data:/app/data
+      # ログファイルを永続化（オプション）
+      - ./logs:/app/logs
+    networks:
+      - futaba-network
+    # ヘルスチェック
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sqlite3; conn = sqlite3.connect('/app/data/futaba_bot.db'); conn.close()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+
+networks:
+  futaba-network:
+    driver: bridge
+
+# 名前付きボリューム（オプション - 上記のバインドマウントの代わり）
+# volumes:
+#   futaba-data:
+#     driver: local
+#   futaba-logs:
+#     driver: local
