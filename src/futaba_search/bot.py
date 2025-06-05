@@ -37,7 +37,7 @@ class FutabaBot(commands.Bot):
     async def on_ready(self) -> None:
         """ボットが準備完了時に呼び出される"""
         logger.info(f"{self.user} がDiscordに接続しました!")
-        
+
         # 初期ステータスを設定
         activity = discord.Activity(
             type=discord.ActivityType.watching,
@@ -45,7 +45,7 @@ class FutabaBot(commands.Bot):
         )
         await self.change_presence(status=discord.Status.online, activity=activity)
         logger.info("初期ステータスを設定")
-        
+
         if not self.monitor_task:
             self.monitor_task = self.monitor_futaba.start()  # type: ignore
 
@@ -71,9 +71,9 @@ class FutabaBot(commands.Bot):
                 logger.debug(
                     f"{len(threads)}件のスレッド、{len(subscriptions)}件の購読をチェック"
                 )
-                
+
                 # アクティブなチャンネル数を計算してステータス更新
-                active_channels = len(set(channel_id for channel_id, _ in subscriptions))
+                active_channels = len({channel_id for channel_id, _ in subscriptions})
                 if active_channels > 0:
                     activity = discord.Activity(
                         type=discord.ActivityType.watching,
